@@ -38,9 +38,9 @@ function init() {
 
 function render() {
     renderer.render(scene, camera);
-    box.rotation.x += 0.01;
+    box.rotation.x += 0.01; //rotasi box sumbu x
     box.rotation.y += 0.01;
-    outlineBox.rotation.x += 0.01;
+    outlineBox.rotation.x += 0.01; // rotasi pada outline box
     outlineBox.rotation.y += 0.01;
     requestAnimationFrame(render); // Memanggil render dalam loop
 }
@@ -52,7 +52,7 @@ function changeColor() {
 
 function onMouseDown(event) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; // Perbaiki mouse.y di sini
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; 
     raycaster.setFromCamera(mouse, camera);
     let intersects = raycaster.intersectObject(box);
     if (intersects.length > 0) {
