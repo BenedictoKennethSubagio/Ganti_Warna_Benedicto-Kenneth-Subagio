@@ -2,6 +2,10 @@ import * as THREE from '../build/three.module.js';
 
 let scene, camera, renderer;
 let box, outlineBox; 
+let raycaster = new THREE.Raycaster();
+let mouse = new THREE.Vector2();
+let currentColorIndex = 0;
+let colors = ['red', 'green', 'blue'];
 
 function init() {
     scene = new THREE.Scene();
@@ -18,17 +22,18 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
     let geometry = new THREE.BoxGeometry(1, 1, 1);
-    let boxColor = new THREE.Color('red');
-    let material = new THREE.MeshBasicMaterial({ color: boxColor, visible : true});
+    let material = new THREE.MeshBasicMaterial({ color: colors[currentColorIndex], visible: true });
     box = new THREE.Mesh(geometry, material);
-    box.position.set(0,0,-5);
+    box.position.set(0, 0, -5);
     scene.add(box);
 
-    let outline = new THREE.MeshBasicMaterial({color : 'white', side : THREE.BackSide});
+    let outline = new THREE.MeshBasicMaterial({ color: 'white', side: THREE.BackSide });
     outlineBox = new THREE.Mesh(geometry, outline);
     outlineBox.scale.set(1.1, 1.1, 1.1);
-    outlineBox.position.set(0,0,-5);
-    scene.add(outlineBox)
+    outlineBox.position.set(0, 0, -5);
+    scene.add(outlineBox);
+
+    window.addEventListener('mousedown', onMouseDown, false);
 }
 
 function render() {
@@ -39,8 +44,20 @@ function render() {
     outlineBox.rotation.y += 0.01;
     requestAnimationFrame(render); // Memanggil render dalam loop
 }
-window.changeColor = function(color){
-    box.material.color.set(color);
+
+function changeColor() {
+    currentColorIndex = (currentColorIndex + 1) % colors.length;
+    box.material.color.set(colors[currentColorIndex]);
+}
+
+function onMouseDown(event) {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1; // Perbaiki mouse.y di sini
+    raycaster.setFromCamera(mouse, camera);
+    let intersects = raycaster.intersectObject(box);
+    if (intersects.length > 0) {
+        changeColor();
+    }
 }
 
 window.onload = function() {
